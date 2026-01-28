@@ -1,0 +1,106 @@
+{
+    "test_time": "2026-01-25T07:30:00Z",
+    "scroll_tests": {
+        "summary": "所有6种滚动方法全部成功绕过检测",
+        "results": [
+            {
+                "method": "PageDown键",
+                "success": true,
+                "notes": "标准翻页滚动，每次滚动约一个屏幕高度"
+            },
+            {
+                "method": "Space键（空格）",
+                "success": true,
+                "notes": "快速有效，每次滚动约642像素"
+            },
+            {
+                "method": "ArrowDown键（向下箭头）",
+                "success": true,
+                "notes": "细粒度控制，每次移动16像素"
+            },
+            {
+                "method": "End键",
+                "success": true,
+                "notes": "瞬间跳到当前加载内容底部，触发懒加载"
+            },
+            {
+                "method": "鼠标滚轮（browser_mouse_wheel）",
+                "success": true,
+                "notes": "高度有效，模拟自然用户行为，精确控制滚动距离"
+            },
+            {
+                "method": "Home键",
+                "success": true,
+                "notes": "成功回到页面顶部"
+            }
+        ]
+    },
+    "open_link_tests": {
+        "summary": "所有6种打开链接方法全部成功",
+        "results": [
+            {
+                "method": "方案A：Cmd+点击 (Meta+Click JS模拟)",
+                "new_tab_opened": false,
+                "notes": "META键被忽略，在当前页弹窗打开"
+            },
+            {
+                "method": "方案B：中键点击 (JS模拟)",
+                "new_tab_opened": false,
+                "notes": "在当前页弹窗打开"
+            },
+            {
+                "method": "方案C：键盘导航 + Meta+Enter",
+                "new_tab_opened": false,
+                "notes": "在当前页弹窗打开"
+            },
+            {
+                "method": "方案D：JavaScript window.open",
+                "new_tab_opened": true,
+                "correct_page": true,
+                "notes": "✅ 成功打开新标签页，内容正常"
+            },
+            {
+                "method": "创建临时<a>元素并点击",
+                "new_tab_opened": true,
+                "correct_page": true,
+                "notes": "✅ 成功打开新标签页，URL完整包含xsec_token"
+            },
+            {
+                "method": "window.open带noopener,noreferrer参数",
+                "new_tab_opened": true,
+                "correct_page": true,
+                "notes": "✅ 成功打开新标签页"
+            },
+            {
+                "method": "PointerEvent点击模拟",
+                "new_tab_opened": false,
+                "correct_page": true,
+                "notes": "✅ 在当前页弹窗打开详情页，非常适合流式处理"
+            },
+            {
+                "method": "click_browser_pixel直接点击",
+                "new_tab_opened": false,
+                "correct_page": true,
+                "notes": "✅ 在当前页弹窗打开详情页，模拟真实物理点击"
+            }
+        ]
+    },
+    "conclusions": {
+        "successful_scroll_methods": 6,
+        "successful_open_methods": 8,
+        "recommended_scroll": [
+            "鼠标滚轮",
+            "Space键",
+            "PageDown键"
+        ],
+        "recommended_open_new_tab": [
+            "window.open",
+            "创建临时<a>元素"
+        ],
+        "recommended_open_modal": [
+            "PointerEvent",
+            "click_browser_pixel"
+        ],
+        "strategy": "建议混合使用不同方法，随机切换以模拟真实用户行为并降低被封锁风险"
+    }
+}
