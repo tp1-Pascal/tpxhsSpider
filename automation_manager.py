@@ -103,33 +103,19 @@ async def run_automation():
             print(f"\n🔍 正在处理关键词: {keyword} (目标数量: {target_count})")
             
             try:
-                # 3.1 进入搜索页
-                await browser.goto_search_page(keyword)
+                # 3.1 Search Interactively (Type, Enter, Filter)
+                await browser.search_keyword_interactive(keyword)
                 
-                # 3.2 获取笔记链接
-                urls = await browser.get_search_results(count=target_count)
-                print(f"🔗 找到 {len(urls)} 个笔记链接")
+                # 3.2 Scrape Interactively (Click, Modal, Close)
+                results = await browser.scrape_search_results_interactive(count=target_count)
                 
-                new_items = []
-                for url in urls:
-                    try:
-                        # 3.3 抓取内容
-                        # Go to detail page directly
-                        data = await browser.extract_note_content(url)
-                        if data:
-                            data['url'] = url
-                            new_items.append(data)
-                            print(f"   ✅ Saved: {data.get('title', 'No Title')[:20]}...")
-                        else:
-                             print(f"   ⚠️ Failed to extract content from {url}")
-                             
-                    except Exception as e:
-                        print(f"❌ Error scraping {url}: {e}")
-                        continue
-                
-                if new_items:
-                    print(f"📥 Processing images for {len(new_items)} items...")
-                    process_keyword_results(keyword, new_items, total_keywords=len(all_keywords_data))
+                if not results:
+                     print(f"⚠️ 关键词 '{keyword}' 未抓取到任何数据。")
+                     continue
+
+                # 3.3 Process Results
+                print(f"📥 Processing images for {len(results)} items...")
+                process_keyword_results(keyword, results, total_keywords=len(all_keywords_data))
                 
                 wait_time = random.uniform(5, 10)
                 print(f"💤 关键词间休息 {wait_time:.1f} 秒...")
@@ -137,7 +123,7 @@ async def run_automation():
                 
             except Exception as e:
                  print(f"❌ Error processing keyword '{keyword}': {e}")
-                 # Try to recover navigation
+                 # Try to recover: return to home
                  try:
                      await browser.page.goto("https://www.xiaohongshu.com")
                  except: pass
